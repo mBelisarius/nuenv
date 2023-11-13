@@ -1,0 +1,3 @@
+#include "nuenv/src/Optimize/DiffEvolution.h"
+#include "nuenv/src/Optimize/Individual.h"
+#include "nuenv/src/Optimize/Population.h"
