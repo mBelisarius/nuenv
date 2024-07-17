@@ -34,8 +34,11 @@ add_compile_options(
 # gtest
 
 include(FetchContent)
-FetchContent_Declare(googletest
-        URL https://github.com/google/googletest/archive/refs/tags/v1.13.0.zip)
+FetchContent_Declare(
+        googletest
+        URL
+        https://github.com/google/googletest/archive/refs/tags/v1.13.0.zip
+)
 
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
@@ -49,8 +52,11 @@ set_property(TARGET gtest_main PROPERTY FOLDER "gtest")
 # Eigen
 
 include(FetchContent)
-FetchContent_Declare(Eigen
-        URL https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.zip)
+FetchContent_Declare(
+        Eigen
+        URL
+        https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.zip
+)
 
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(EIGEN_FORCE_SHARED_CRT ON CACHE BOOL "" FORCE)
