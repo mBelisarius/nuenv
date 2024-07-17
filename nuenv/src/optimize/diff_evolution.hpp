@@ -1,11 +1,11 @@
 #ifndef NUENV_OPTIMIZE_DIFFEVOLUTION_H
 #define NUENV_OPTIMIZE_DIFFEVOLUTION_H
 
-#include "nuenv/src/Core/Container.h"
-#include "nuenv/src/Core/Lambda.h"
-#include "nuenv/src/Core/Math.h"
-#include "nuenv/src/Core/Random.h"
-#include "nuenv/src/Optimize/Population.h"
+#include "nuenv/src/core/container.hpp"
+#include "nuenv/src/core/lambda.hpp"
+#include "nuenv/src/core/math.hpp"
+#include "nuenv/src/core/random.hpp"
+#include "nuenv/src/optimize/population.hpp"
 
 namespace nuenv {
 

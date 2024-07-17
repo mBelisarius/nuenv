@@ -1,8 +1,8 @@
-#include "nuenv/src/Integrate/RK4.h"
+#include "nuenv/src/integrate/rk4.hpp"
 
-#include "nuenv/src/Core/Container.h"
-#include "nuenv/src/Core/Math.h"
-#include "nuenv/src/Integrate/OdeSolution.h"
+#include "nuenv/src/core/container.hpp"
+#include "nuenv/src/core/math.hpp"
+#include "nuenv/src/integrate/ode_solution.hpp"
 
 #include <gtest/gtest.h>
 

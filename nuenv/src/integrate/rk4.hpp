@@ -1,10 +1,10 @@
 #ifndef NUENV_INTEGRATE_RK4_H
 #define NUENV_INTEGRATE_RK4_H
 
-#include "nuenv/src/Core/Container.h"
-#include "nuenv/src/Core/Lambda.h"
-#include "nuenv/src/Integrate/OdeSolver.h"
-#include "nuenv/src/Integrate/OdeSolution.h"
+#include "nuenv/src/core/container.hpp"
+#include "nuenv/src/core/lambda.hpp"
+#include "nuenv/src/integrate/ode_solver.hpp"
+#include "nuenv/src/integrate/ode_solution.hpp"
 
 namespace nuenv {
 

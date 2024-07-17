@@ -1,7 +1,7 @@
 #ifndef NUENV_INTEGRATE_QUADRATURE_H
 #define NUENV_INTEGRATE_QUADRATURE_H
 
-#include "nuenv/Core"
+#include "nuenv/core"
 
 namespace nuenv {
 

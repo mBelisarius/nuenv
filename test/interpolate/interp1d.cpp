@@ -1,4 +1,4 @@
-#include "nuenv/src/Interpolate/Interp1d.h"
+#include "nuenv/src/interpolate/interp1d.hpp"
 
 #include <gtest/gtest.h>
 

@@ -6,14 +6,19 @@ cmake_minimum_required(VERSION 3.20)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "cmake")
 
-set(ProjectName "nuenv-basics")
-set(ProjectNamespace "nuenv")
+set(ProjectName nuenv)
+set(ProjectNamespace nuenv)
+set(CMAKE_CXX_STANDARD 20)
 
-project("${ProjectName}")
+project(${ProjectName})
 
-set(CMAKE_CXX_STANDARD 23)
+# Guard against bad build-type strings
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release")
+endif()
 
-add_compile_options(-Wall -Werror -Wno-error=uninitialized
+add_compile_options(
+        -Wall -Werror -Wno-error=uninitialized
         $<$<CONFIG:RELEASE>:-O3>
         $<$<CONFIG:RELEASE>:-DNDEBUG>
         $<$<CONFIG:RELWITHDEBINFO>:-O2>
@@ -41,11 +46,6 @@ set_property(TARGET gtest PROPERTY FOLDER "gtest")
 set_property(TARGET gtest_main PROPERTY FOLDER "gtest")
 
 # =========================================================
-# Log4cxx
-
-find_package(log4cxx 0.11)
-
-# =========================================================
 # Eigen
 
 include(FetchContent)
@@ -68,35 +68,32 @@ add_library(${ProjectName}::${ProjectNamespace} ALIAS ${ProjectName})
 
 target_include_directories(${ProjectName} INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-        $<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>)
+        $<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>
+)
 
-#target_include_directories("${ProjectName}" PRIVATE $<TARGET_PROPERTY:log4cxx,INTERFACE_INCLUDE_DIRECTORIES>)
-#target_link_libraries( "${ProjectName}" PRIVATE log4cxx)
-target_link_libraries("${ProjectName}" INTERFACE Eigen3::Eigen)
+target_link_libraries(${ProjectName} INTERFACE Eigen3::Eigen)
 
-set_target_properties("${ProjectName}" PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(${ProjectName} PROPERTIES EXPORT_NAME ${ProjectName})
+set_target_properties(${ProjectName} PROPERTIES LINKER_LANGUAGE CXX)
 
-# --- main
-
-add_executable("${ProjectName}-main" examples/main.cpp)
-target_link_libraries("${ProjectName}-main" PUBLIC "${ProjectName}")
+export(PACKAGE ${ProjectName})
 
 # --- gtest
 
 enable_testing()
 
-add_executable("${ProjectName}-test"
-        test/Algorithm/Search.cpp
-        test/Algorithm/Space.cpp
-        test/Integrate/Quadrature.cpp
-        test/Integrate/RK4.cpp
-        test/Interpolate/Interp1d.cpp
-        test/Optimize/DiffEvolution.cpp
+add_executable(${ProjectName}-test
+        test/algorithm/search.cpp
+        test/algorithm/space.cpp
+        test/integrate/quadrature.cpp
+        test/integrate/rk4.cpp
+        test/interpolate/interp1d.cpp
+        test/optimize/diff_evolution.cpp
 )
 
-target_link_libraries("${ProjectName}-test" gtest_main "${ProjectName}")
+target_link_libraries(${ProjectName}-test gtest_main ${ProjectName})
 
 include(GoogleTest)
-gtest_discover_tests("${ProjectName}-test")
+gtest_discover_tests(${ProjectName}-test)
 
 # =========================================================

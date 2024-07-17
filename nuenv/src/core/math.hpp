@@ -6,7 +6,7 @@
 
 namespace nuenv {
 
-using namespace std::numbers;
+    using namespace std::numbers;
 
 using std::ceil;
 

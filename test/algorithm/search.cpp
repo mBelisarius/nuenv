@@ -1,7 +1,7 @@
-#include "nuenv/src/Algorithm/Search.h"
+#include "nuenv/src/algorithm/search.hpp"
 
-#include "nuenv/src/Core/Container.h"
-#include "nuenv/src/Core/Exception.h"
+#include "nuenv/src/core/container.hpp"
+#include "nuenv/src/core/exception.hpp"
 
 #include <gtest/gtest.h>
 
