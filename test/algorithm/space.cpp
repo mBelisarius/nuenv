@@ -1,7 +1,7 @@
-#include "nuenv/src/Algorithm/Space.h"
+#include "nuenv/src/algorithm/space.hpp"
 
-#include "nuenv/src/Core/Container.h"
-#include "nuenv/src/Core/Exception.h"
+#include "nuenv/src/core/container.hpp"
+#include "nuenv/src/core/exception.hpp"
 
 #include "gtest/gtest.h"
 

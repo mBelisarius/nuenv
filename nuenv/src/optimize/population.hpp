@@ -1,8 +1,8 @@
 #ifndef NUENV_OPTIMIZE_POPULATION_H
 #define NUENV_OPTIMIZE_POPULATION_H
 
-#include "nuenv/src/Core/Container.h"
-#include "nuenv/src/Optimize/Individual.h"
+#include "nuenv/src/core/container.hpp"
+#include "nuenv/src/optimize/individual.hpp"
 
 namespace nuenv {
 

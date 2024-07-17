@@ -1,6 +1,6 @@
-#include "nuenv/src/Optimize/DiffEvolution.h"
+#include "nuenv/src/optimize/diff_evolution.hpp"
 
-#include "nuenv/src/Core/Math.h"
+#include "nuenv/src/core/math.hpp"
 
 #include <gtest/gtest.h>
 

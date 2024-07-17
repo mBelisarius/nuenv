@@ -1,8 +1,8 @@
 #ifndef NUENV_ALGORITHM_SEARCH_H
 #define NUENV_ALGORITHM_SEARCH_H
 
-#include "nuenv/src/Core/Container.h"
-#include "nuenv/src/Core/Exception.h"
+#include "nuenv/src/core/container.hpp"
+#include "nuenv/src/core/exception.hpp"
 
 namespace nuenv {
 

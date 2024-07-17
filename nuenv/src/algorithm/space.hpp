@@ -1,9 +1,9 @@
 #ifndef NUENV_ALGORITHM_SPACE_H
 #define NUENV_ALGORITHM_SPACE_H
 
-#include "nuenv/src/Core/Container.h"
-#include "nuenv/src/Core/Exception.h"
-#include "nuenv/src/Core/Math.h"
+#include "nuenv/src/core/container.hpp"
+#include "nuenv/src/core/exception.hpp"
+#include "nuenv/src/core/math.hpp"
 
 namespace nuenv {
 

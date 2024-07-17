@@ -1,6 +1,6 @@
-#include "nuenv/src/Integrate/Quadrature.h"
+#include "nuenv/src/integrate/quadrature.hpp"
 
-#include "nuenv/src/Core/Math.h"
+#include "nuenv/src/core/math.hpp"
 
 #include <gtest/gtest.h>
 

@@ -1,7 +1,7 @@
 #ifndef NUENV_INTEGRATE_ODESOLVER_H
 #define NUENV_INTEGRATE_ODESOLVER_H
 
-#include "nuenv/src/Integrate/OdeSolution.h"
+#include "nuenv/src/integrate/ode_solution.hpp"
 
 namespace nuenv {
 

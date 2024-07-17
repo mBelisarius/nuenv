@@ -1,9 +1,9 @@
 #ifndef NUENV_INTERPOLATE_INTERP1D_H
 #define NUENV_INTERPOLATE_INTERP1D_H
 
-#include "nuenv/src/Algorithm/Search.h"
-#include "nuenv/src/Core/Container.h"
-#include "nuenv/src/Core/Math.h"
+#include "nuenv/src/algorithm/search.hpp"
+#include "nuenv/src/core/container.hpp"
+#include "nuenv/src/core/math.hpp"
 
 namespace nuenv {
 

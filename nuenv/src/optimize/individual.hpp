@@ -1,7 +1,7 @@
 #ifndef NUENV_OPTIMIZE_INDIVIDUAL_H
 #define NUENV_OPTIMIZE_INDIVIDUAL_H
 
-#include "nuenv/src/Core/CTypes.h"
+#include "nuenv/src/core/ctypes.hpp"
 
 namespace nuenv {
 
