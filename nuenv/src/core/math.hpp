@@ -6,7 +6,7 @@
 
 namespace nuenv {
 
-    using namespace std::numbers;
+using namespace std::numbers;
 
 using std::ceil;
 
@@ -42,11 +42,10 @@ using std::sin;
  *       the real part of that number.
  */
 template<typename Scalar>
-Scalar pow2(Scalar x)
-{
-    return x * x;
+Scalar pow2(Scalar x) {
+  return x * x;
 }
 
-}
+} // namespace nuenv
 
 #endif

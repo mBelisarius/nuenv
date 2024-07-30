@@ -18,23 +18,21 @@ namespace nuenv {
  * @tparam Scalar Scalar type of the numbers.
  */
 template<typename Scalar>
-class Interp1d
-{
-public:
-    Interp1d(const VectorX<Scalar>& x,
-             const VectorX<Scalar>& y,
-             bool check_bounds = true,
-             bool assume_sorted = false);
+class Interp1d {
+ public:
+  Interp1d(const VectorX<Scalar>& x,
+		   const VectorX<Scalar>& y,
+		   bool check_bounds = true);
 
-    Scalar linear(Scalar x);
+  Scalar linear(Scalar x);
 
-    Scalar exponential(Scalar x);
+  Scalar exponential(Scalar x);
 
-private:
-    VectorX<Scalar> m_x;
-    VectorX<Scalar> m_y;
-    size_t m_size;
-    bool m_check_bounds;
+ private:
+  VectorX<Scalar> x_;
+  VectorX<Scalar> y_;
+  size_t size_;
+  bool check_bounds_;
 };
 
 /**
@@ -42,29 +40,19 @@ private:
  *
  * @tparam Scalar Scalar type of the numbers.
  *
- * @param x Array of x-values representing the independent variable.
+ * @param x Array of x-values representing the independent variable,
+ *  must be increasing.
  * @param y Array of y-values representing the dependent variable.
  * @param check_bounds Indicates whether to check if new points are within the
  *  domain bounds of 'x'.
- * @param assume_sorted Indicates whether 'x' is assumed to be pre-sorted.
  */
 template<typename Scalar>
 Interp1d<Scalar>::Interp1d(const VectorX<Scalar>& x,
-                           const VectorX<Scalar>& y,
-                           const bool check_bounds,
-                           const bool assume_sorted)
-    : m_x(x), m_y(y), m_size(x.size()), m_check_bounds(check_bounds)
-{
-    if (x.size() != y.size())
-    {
-        throw invalid_argument("Arrays 'x' and 'y' must have same size");
-    }
-
-    // TODO: Implement sorting.
-    if (!assume_sorted)
-    {
-        throw invalid_argument("Array 'x' must be pre-sorted");
-    }
+						   const VectorX<Scalar>& y,
+						   const bool check_bounds)
+	: x_(x), y_(y), size_(x.size()), check_bounds_(check_bounds) {
+  assert((x.size() > 0 && y.size() > 0) && "Arrays must not be empty");
+  assert((x.size() == y.size()) && "Arrays 'x' and 'y' must have same size");
 }
 
 /**
@@ -77,18 +65,17 @@ Interp1d<Scalar>::Interp1d(const VectorX<Scalar>& x,
  * @return Interpolated value at 'x'.
  */
 template<typename Scalar>
-Scalar Interp1d<Scalar>::linear(Scalar x)
-{
-    if (m_check_bounds && ((x < m_x(0)) || (x > m_x(m_size - 1))))
-    {
-        throw invalid_argument("'x' is out of bounds");
-    }
+Scalar Interp1d<Scalar>::linear(Scalar x) {
+  assert(!(check_bounds_ && x < x_[0] && x > x_[size_ - 1]) && "'x' is out of bounds");
 
-    size_t index = binarySearch<Scalar>(m_x, x);
+  if (x < x_[0]) { return y_[0]; }
+  else if (x > x_[size_ - 1]) { return y_[size_ - 1]; }
 
-    return m_y[index]
-           + ((m_y[index + 1] - m_y[index]) / (m_x[index + 1] - m_x[index]))
-           * (x - m_x[index]);
+  size_t index = SearchSorted<Scalar>(x_, x);
+
+  return y_[index]
+	  + ((y_[index + 1] - y_[index]) / (x_[index + 1] - x_[index]))
+		  * (x - x_[index]);
 }
 
 /**
@@ -101,19 +88,18 @@ Scalar Interp1d<Scalar>::linear(Scalar x)
  * @return Interpolated value at 'x'.
  */
 template<typename Scalar>
-Scalar Interp1d<Scalar>::exponential(Scalar x)
-{
-    if (m_check_bounds && ((x < m_x(0)) || (x > m_x(m_size - 1))))
-    {
-        throw invalid_argument("'x' is out of bounds");
-    }
+Scalar Interp1d<Scalar>::exponential(Scalar x) {
+  assert(!(check_bounds_ && x < x_[0] && x > x_[size_ - 1]) && "'x' is out of bounds");
 
-    size_t index = binarySearch<Scalar>(m_x, x);
+  if (x < x_[0]) { return y_[0]; }
+  else if (x > x_[size_ - 1]) { return y_[size_ - 1]; }
 
-    Scalar zeta = log(m_y[index + 1] / m_y[index])
-                  / (m_x[index + 1] - m_x[index]);
+  size_t index = SearchSorted<Scalar>(x_, x);
 
-    return m_y[index] * exp(zeta * (x - m_x[index]));
+  Scalar zeta = log(y_[index + 1] / y_[index])
+	  / (x_[index + 1] - x_[index]);
+
+  return y_[index] * exp(zeta * (x - x_[index]));
 }
 
 }

@@ -1,43 +1,117 @@
-#ifndef NUENV_ALGORITHM_SEARCH_H
-#define NUENV_ALGORITHM_SEARCH_H
+#ifndef NUENV_ALGORITHM_SEARCH_H_
+#define NUENV_ALGORITHM_SEARCH_H_
 
-#include "nuenv/src/core/container.hpp"
-#include "nuenv/src/core/exception.hpp"
+#include "nuenv/core"
 
 namespace nuenv {
 
-/**
- * @brief Search through a sorted array and returns the index of the element
- *  that is immediately lower than 'val'.
- *
- * @tparam Scalar Scalar type of the numbers.
- *
- * @param arr Array to search in.
- * @param val Value to search for.
- *
- * @return Position in the array where the value is immediately lower than 'val'.
- */
+namespace internal {
+
+template<typename T>
+T bchoice(bool condition, T v_true, T v_false) {
+  return (condition * v_true) | (!condition * v_false);
+}
+
 template<typename Scalar>
-size_t binarySearch(const VectorX<Scalar>& arr, Scalar val)
-{
-    if (arr.size() == 0) { throw invalid_argument("Array must not be empty"); }
+Index linearSearch(const VectorX<Scalar>& arr,
+				   Scalar val,
+				   Index begin = 0,
+				   Index end = 0) {
+  assert((arr.size() > 0) && "Array must not be empty");
 
-    size_t lower_index = 0;
-    size_t upper_index = arr.size() - 1;
+  Index size = arr.size();
+  if (end == 0) { end = size - 1; }
 
-    while (upper_index - lower_index > 1)
-    {
-        size_t mid_index = lower_index + (upper_index - lower_index) / 2;
-        Scalar mid = arr[mid_index];
+  for (; begin <= end; ++begin) {
+	if (arr[begin] == val) { break; }
+  }
 
-        if (val == mid) { return mid_index; }
-        if (val > mid) { lower_index = mid_index; }
-        else { upper_index = mid_index; }
-    }
+  // Search successful
+  if ((begin < end) || (arr[end] == val)) { return begin; }
 
-    return lower_index;
+  return size;
 }
 
+template<typename Scalar>
+Index linearSortedSearch(const VectorX<Scalar>& arr,
+						 Scalar val,
+						 Index begin = 0,
+						 Index end = 0) {
+  assert((arr.size() > 0) && "Array must not be empty");
+
+  if (end == 0) { end = arr.size() - 1; }
+
+  Index cnt = 0;
+  for (Index i = end + 1; i > begin; --i) {
+	cnt += (arr[i - 1] > val);
+  }
+
+  return end - bchoice(cnt > end, end, cnt);
 }
+
+template<typename Scalar>
+Index binarySearch(const VectorX<Scalar>& arr,
+				   Scalar val,
+				   Index begin = 0,
+				   Index end = 0) {
+  assert((arr.size() > 0) && "Array must not be empty");
+
+  Index size = arr.size();
+  if (end == 0) { end = size; }
+
+  while (end - begin > 1) {
+	Index mid = (begin + end) / 2;
+	bool condition = val < arr[mid];
+
+	begin = bchoice(!condition, mid, begin);
+	end = bchoice(condition, mid, end);
+  }
+
+  // Bounds checking
+  begin = bchoice<Index>(val < arr[0], 0, begin);
+  begin = bchoice<Index>(val > arr[size - 1], size - 1, begin);
+
+  return begin;
+}
+
+template<typename Scalar, Index skip = 8>
+Index skiplistSearch(const VectorX<Scalar>& arr,
+					 Scalar val,
+					 Index begin = 0,
+					 Index end = 0) {
+  assert((arr.size() >= skip) && "Array must have at least 'skip' elements");
+
+  Index size = arr.size();
+  VectorX<Scalar> skplst = VectorX<Scalar>(size / skip);
+  for (Index i = 0; i < size / skip; ++i) {
+	skplst[i] = arr[skip * i];
+  }
+
+  Index j = binarySearch(skplst, val, begin, end);
+  if (j < size / skip - 1) { end = (j + 1) * skip; }
+  begin = linearSortedSearch(arr, val, skip * j, end);
+
+  return begin;
+}
+
+} // namespace internal
+
+template<typename Scalar>
+Index SearchSorted(const VectorX<Scalar>& arr, Scalar val) {
+  assert((arr.size() > 0) && "Array must not be empty");
+
+  if (arr.size() > 64) { return internal::skiplistSearch(arr, val); }
+
+  return internal::linearSortedSearch(arr, val);
+}
+
+template<typename Scalar>
+Index SearchUnsorted(const VectorX<Scalar>& arr, Scalar val) {
+  assert((arr.size() > 0) && "Array must not be empty");
+
+  return internal::linearSearch<Scalar>(arr, val);
+}
+
+} // namespace nuenv
 
 #endif
