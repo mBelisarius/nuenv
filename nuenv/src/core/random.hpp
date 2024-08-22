@@ -1,5 +1,5 @@
-#ifndef NUENV_CORE_RANDOM_H
-#define NUENV_CORE_RANDOM_H
+#ifndef NUENV_CORE_RANDOM_H_
+#define NUENV_CORE_RANDOM_H_
 
 #include <random>
 

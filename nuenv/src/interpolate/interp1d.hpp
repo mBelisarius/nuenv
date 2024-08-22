@@ -1,5 +1,5 @@
-#ifndef NUENV_INTERPOLATE_INTERP1D_H
-#define NUENV_INTERPOLATE_INTERP1D_H
+#ifndef NUENV_INTERPOLATE_INTERP1D_H_
+#define NUENV_INTERPOLATE_INTERP1D_H_
 
 #include "nuenv/src/algorithm/search.hpp"
 #include "nuenv/src/core/container.hpp"

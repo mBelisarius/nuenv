@@ -1,5 +1,5 @@
-#ifndef NUENV_CORE_CONTAINER_H
-#define NUENV_CORE_CONTAINER_H
+#ifndef NUENV_CORE_CONTAINER_H_
+#define NUENV_CORE_CONTAINER_H_
 
 #include "Eigen/Dense"
 #include <vector>

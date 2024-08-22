@@ -1,5 +1,5 @@
-#ifndef NUENV_CORE_MATHUTILS_H
-#define NUENV_CORE_MATHUTILS_H
+#ifndef NUENV_CORE_MATH_H_
+#define NUENV_CORE_MATH_H_
 
 #include <cmath>
 #include <numbers>
@@ -42,7 +42,7 @@ using std::sin;
  *       the real part of that number.
  */
 template<typename Scalar>
-Scalar pow2(Scalar x) {
+Scalar Pow2(Scalar x) {
   return x * x;
 }
 

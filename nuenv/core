@@ -1,6 +1,5 @@
 #include "nuenv/src/core/container.hpp"
 #include "nuenv/src/core/ctypes.hpp"
-#include "nuenv/src/core/exception.hpp"
 #include "nuenv/src/core/lambda.hpp"
 #include "nuenv/src/core/math.hpp"
 #include "nuenv/src/core/random.hpp"

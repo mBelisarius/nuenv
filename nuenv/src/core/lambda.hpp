@@ -1,5 +1,5 @@
-#ifndef NUENV_CORE_LAMBDA_H
-#define NUENV_CORE_LAMBDA_H
+#ifndef NUENV_CORE_LAMBDA_H_
+#define NUENV_CORE_LAMBDA_H_
 
 #include <functional>
 

@@ -1,8 +1,8 @@
-#ifndef NUENV_ALGORITHM_SPACE_H
-#define NUENV_ALGORITHM_SPACE_H
+#ifndef NUENV_ALGORITHM_SPACE_H_
+#define NUENV_ALGORITHM_SPACE_H_
 
 #include "nuenv/src/core/container.hpp"
-#include "nuenv/src/core/exception.hpp"
+#include "nuenv/src/core/ctypes.hpp"
 #include "nuenv/src/core/math.hpp"
 
 namespace nuenv {
@@ -19,9 +19,8 @@ namespace nuenv {
  * @return Array of evenly spaced scalars.
  */
 template<typename Scalar>
-VectorX<Scalar> linearSpace(Scalar start, Scalar stop, size_t num)
-{
-    return VectorX<Scalar>::LinSpaced(num, start, stop);
+VectorX<Scalar> LinearSpace(Scalar start, Scalar stop, Index num) {
+  return VectorX<Scalar>::LinSpaced(num, start, stop);
 }
 
 /**
@@ -37,26 +36,21 @@ VectorX<Scalar> linearSpace(Scalar start, Scalar stop, size_t num)
  * @return Array of evenly spaced scalars.
  */
 template<typename Scalar>
-VectorX<Scalar> logarithmicSpace(Scalar start, Scalar stop, size_t num)
-{
-    if (start == 0.0 || stop == 0.0)
-    {
-        throw invalid_argument("Argument must not be 0");
-    }
+VectorX<Scalar> LogarithmicSpace(Scalar start, Scalar stop, Index num) {
+  assert((start > 0.0 && stop > 0.0) && "Arguments must not be 0");
 
-    const Scalar base = 10.0;
+  constexpr Scalar base = 2.0;
 
-    Scalar a_log = log(start) / log(base);
-    Scalar b_log = log(stop) / log(base);
+  Scalar a_log = log(start) / log(base);
+  Scalar b_log = log(stop) / log(base);
+  VectorX<Scalar> arr = LinearSpace(a_log, b_log, num);
 
-    VectorX<Scalar> vector = linearSpace(a_log, b_log, num);
+  for (Index i = 0; i < num; i++) {
+	arr[i] = pow(base, arr[i]);
+  }
 
-    for (size_t i = 0; i < num; i++)
-    {
-        vector[i] = pow(base, vector[i]);
-    }
-
-    return vector;
+  // Returns with copy elision
+  return arr;
 }
 
 /**
@@ -72,23 +66,19 @@ VectorX<Scalar> logarithmicSpace(Scalar start, Scalar stop, size_t num)
  * @return Array of evenly spaced scalars.
  */
 template<typename Scalar>
-VectorX<Scalar> geometricSpace(Scalar start, Scalar stop, size_t num)
-{
-    if (start == 0.0 || stop == 0.0)
-    {
-        throw invalid_argument("Argument must not be 0");
-    }
+VectorX<Scalar> geometricSpace(Scalar start, Scalar stop, Index num) {
+  assert((start > 0.0 && stop > 0.0) && "Arguments must not be 0");
 
-    Scalar r = pow(stop / start, 1.0 / (static_cast<Scalar>(num) - 1.0));
+  Scalar r = pow(stop / start, 1.0 / (static_cast<Scalar>(num) - 1.0));
 
-    VectorX<Scalar> vector(num);
+  VectorX<Scalar> arr(num);
 
-    for (size_t i = 0; i < num; i++)
-    {
-        vector[i] = start * pow(r, i);
-    }
+  for (Index i = 0; i < num; i++) {
+	arr[i] = start * pow(r, i);
+  }
 
-    return vector;
+  // Returns with copy elision
+  return arr;
 }
 
 }

@@ -1,5 +1,5 @@
-#ifndef NUENV_OPTIMIZE_DIFFEVOLUTION_H
-#define NUENV_OPTIMIZE_DIFFEVOLUTION_H
+#ifndef NUENV_OPTIMIZE_DIFFEVOLUTION_H_
+#define NUENV_OPTIMIZE_DIFFEVOLUTION_H_
 
 #include "nuenv/src/core/container.hpp"
 #include "nuenv/src/core/lambda.hpp"
@@ -17,7 +17,7 @@ namespace nuenv {
  *
  * The differential evolution method is a stochastic population based method
  * that is useful for global optimization problems. It does not use gradient
- * methods to find the minimum, and can search large areas of candidate space,
+ * methods to find the minimum, and can SearchSorted large areas of candidate space,
  * but often requires larger numbers of function evaluations than conventional
  * gradient-based techniques.
  *
@@ -29,55 +29,54 @@ namespace nuenv {
  * @see Lampinen, J., A constraint handling approach for the differential evolution algorithm. Proceedings of the 2002 Congress on Evolutionary Computation. CEC’02 (Cat. No. 02TH8600). Vol. 2. IEEE, 2002.
  */
 template<typename Scalar, typename ScalarField>
-class DiffEvolution
-{
-public:
-    DiffEvolution(Lambda<Scalar(ScalarField)> fitness,
-                  VectorT<Vector2X<Scalar>> bounds,
-                  Lambda<Scalar(ScalarField)> constraints =
-                          [](ScalarField /*x*/) { return 0.0; },
-                  size_t maxiter = 1000,
-                  size_t breakafter = 100,
-                  size_t popsize = 16,
-                  Vector2X<Scalar> mutation = Vector2X<Scalar>{ 0.5, 0.8 },
-                  Scalar recombination = 0.8);
+class DiffEvolution {
+ public:
+  DiffEvolution(Lambda<Scalar(ScalarField)> fitness,
+				VectorT<Vector2X<Scalar>> bounds,
+				Lambda<Scalar(ScalarField)> constraints =
+				[](ScalarField /*x*/) { return 0.0; },
+				size_t maxiter = 1000,
+				size_t breakafter = 100,
+				size_t popsize = 16,
+				Vector2X<Scalar> mutation = Vector2X<Scalar> {0.5, 0.8},
+				Scalar recombination = 0.8);
 
-    ScalarField optimize();
+  ScalarField optimize();
 
-protected:
-    void ensureBounds(ScalarField& candidate);
+ protected:
+  void ensureBounds(ScalarField& candidate);
 
-    VectorX<size_t> generateSamples(Index n, size_t candidate_index);
+  VectorX<size_t> generateSamples(Index n, size_t candidate_index);
 
-    void generate();
+  void generate();
 
-    void mutateRand1(ScalarField& candidate, const VectorX<size_t>& samples);
+  void mutateRand1(ScalarField& candidate, const VectorX<size_t>& samples);
 
-    void mutateBest1(ScalarField& candidate, const VectorX<size_t>& samples);
+  void mutateBest1(ScalarField& candidate, const VectorX<size_t>& samples);
 
-    ScalarField crossover(size_t pos);
+  ScalarField crossover(size_t pos);
 
-    bool iterate();
+  bool iterate();
 
-private:
-    Lambda<Scalar(ScalarField)> m_fitness;
-    VectorT<Vector2X<Scalar>> m_bounds;
-    size_t m_dim;
-    Lambda<Scalar(ScalarField)> m_constraints;
-    size_t m_maxiter;
-    size_t m_breakafter;
-    size_t m_popsize;
-    Scalar m_recombination;
+ private:
+  Lambda<Scalar(ScalarField)> m_fitness;
+  VectorT<Vector2X<Scalar>> m_bounds;
+  size_t m_dim;
+  Lambda<Scalar(ScalarField)> m_constraints;
+  size_t m_maxiter;
+  size_t m_breakafter;
+  size_t m_popsize;
+  Scalar m_recombination;
 
-    Scalar m_mutation;
-    Population<Scalar, ScalarField> m_population;
-    random_device m_rand_device;
-    minstd_rand m_gen;
-    uniform_int_distribution<size_t> m_rand_dim;
-    uniform_int_distribution<size_t> m_rand_popsize;
-    VectorT<uniform_real_distribution<Scalar>> m_rand_bounds;
-    uniform_real_distribution<Scalar> m_rand_mutation;
-    uniform_real_distribution<Scalar> m_rand_recomb;
+  Scalar m_mutation;
+  Population<Scalar, ScalarField> m_population;
+  random_device m_rand_device;
+  minstd_rand m_gen;
+  uniform_int_distribution<size_t> m_rand_dim;
+  uniform_int_distribution<size_t> m_rand_popsize;
+  VectorT<uniform_real_distribution<Scalar>> m_rand_bounds;
+  uniform_real_distribution<Scalar> m_rand_mutation;
+  uniform_real_distribution<Scalar> m_rand_recomb;
 };
 
 /**
@@ -100,39 +99,37 @@ private:
  */
 template<typename Scalar, typename ScalarField>
 DiffEvolution<Scalar, ScalarField>::DiffEvolution(
-    Lambda<Scalar(ScalarField)> fitness,
-    VectorT<Vector2X<Scalar>> bounds,
-    Lambda<Scalar(ScalarField)> constraints,
-    const size_t maxiter,
-    const size_t breakafter,
-    const size_t popsize,
-    Vector2X<Scalar> mutation,
-    Scalar recombination)
-    : m_fitness(fitness),
-      m_bounds(bounds),
-      m_dim(bounds.size()),
-      m_constraints(constraints),
-      m_maxiter(maxiter),
-      m_breakafter(breakafter),
-      m_popsize(popsize * m_dim),
-      m_recombination(recombination),
-      m_population(m_popsize),
-      m_gen(m_rand_device()),
-      m_rand_dim(0, m_dim),
-      m_rand_popsize(0, m_popsize),
-      m_rand_bounds(m_dim),
-      m_rand_mutation(mutation[0], mutation[1]),
-      m_rand_recomb(0.0, 1.0)
-{
-    // TODO: Throw exception
-    assert(m_dim > 0);
-    assert(m_popsize > 3);
+	Lambda<Scalar(ScalarField)> fitness,
+	VectorT<Vector2X<Scalar>> bounds,
+	Lambda<Scalar(ScalarField)> constraints,
+	const size_t maxiter,
+	const size_t breakafter,
+	const size_t popsize,
+	Vector2X<Scalar> mutation,
+	Scalar recombination)
+	: m_fitness(fitness),
+	  m_bounds(bounds),
+	  m_dim(bounds.size()),
+	  m_constraints(constraints),
+	  m_maxiter(maxiter),
+	  m_breakafter(breakafter),
+	  m_popsize(popsize * m_dim),
+	  m_recombination(recombination),
+	  m_population(m_popsize),
+	  m_gen(m_rand_device()),
+	  m_rand_dim(0, m_dim),
+	  m_rand_popsize(0, m_popsize),
+	  m_rand_bounds(m_dim),
+	  m_rand_mutation(mutation[0], mutation[1]),
+	  m_rand_recomb(0.0, 1.0) {
+  // TODO: Throw exception
+  assert(m_dim > 0);
+  assert(m_popsize > 3);
 
-    for (size_t i = 0; i < m_dim; i++)
-    {
-        m_rand_bounds[i] = uniform_real_distribution<Scalar>(m_bounds[i][0],
-            m_bounds[i][1]);
-    }
+  for (size_t i = 0; i < m_dim; i++) {
+	m_rand_bounds[i] = uniform_real_distribution<Scalar>(m_bounds[i][0],
+														 m_bounds[i][1]);
+  }
 }
 
 /**
@@ -141,21 +138,19 @@ DiffEvolution<Scalar, ScalarField>::DiffEvolution(
  * @return Scalar field that minimizes the objective function.
  */
 template<typename Scalar, typename ScalarField>
-ScalarField DiffEvolution<Scalar, ScalarField>::optimize()
-{
-    generate();
+ScalarField DiffEvolution<Scalar, ScalarField>::optimize() {
+  generate();
 
-    size_t last_best = 0;
+  size_t last_best = 0;
 
-    for (size_t iter = 0; iter < m_maxiter; iter++)
-    {
-        // Iterate to next generation
-        if (iterate()) { last_best = iter; }
+  for (size_t iter = 0; iter < m_maxiter; iter++) {
+	// Iterate to next generation
+	if (iterate()) { last_best = iter; }
 
-        if (iter - last_best >= m_breakafter) { break; }
-    }
+	if (iter - last_best >= m_breakafter) { break; }
+  }
 
-    return m_population.best_individual.value;
+  return m_population.best_individual.value;
 }
 
 /**
@@ -171,28 +166,25 @@ ScalarField DiffEvolution<Scalar, ScalarField>::optimize()
  * @param candidate Candidate solution to be checked and adjusted.
  */
 template<typename Scalar, typename ScalarField>
-void DiffEvolution<Scalar, ScalarField>::ensureBounds(ScalarField& candidate)
-{
-    // TODO: Select method
-    // TODO: Vectorize
-    for (size_t i = 0; i < m_dim; i++)
-    {
-        // Truncate
-        // candidate[i] = max(candidate[i], m_bounds[i][0]);
-        // candidate[i] = min(candidate[i], m_bounds[i][1]);
+void DiffEvolution<Scalar, ScalarField>::ensureBounds(ScalarField& candidate) {
+  // TODO: Select method
+  // TODO: Vectorize
+  for (size_t i = 0; i < m_dim; i++) {
+	// Truncate
+	// candidate[i] = max(candidate[i], m_bounds[i][0]);
+	// candidate[i] = min(candidate[i], m_bounds[i][1]);
 
-        // Reflection
-        // candidate[i] = candidate[i] < m_bounds[i][0] ?
-        //         2.0 * m_bounds[i][0] - candidate[i] : candidate[i];
-        // candidate[i] = candidate[i] > m_bounds[i][1] ?
-        //         2.0 * m_bounds[i][1] - candidate[i] : candidate[i];
+	// Reflection
+	// candidate[i] = candidate[i] < m_bounds[i][0] ?
+	//         2.0 * m_bounds[i][0] - candidate[i] : candidate[i];
+	// candidate[i] = candidate[i] > m_bounds[i][1] ?
+	//         2.0 * m_bounds[i][1] - candidate[i] : candidate[i];
 
-        // Random
-        if (candidate[i] < m_bounds[i][0] || candidate[i] > m_bounds[i][1])
-        {
-            candidate[i] = m_rand_bounds[i](m_gen);
-        }
-    }
+	// Random
+	if (candidate[i] < m_bounds[i][0] || candidate[i] > m_bounds[i][1]) {
+	  candidate[i] = m_rand_bounds[i](m_gen);
+	}
+  }
 }
 
 /**
@@ -209,31 +201,26 @@ void DiffEvolution<Scalar, ScalarField>::ensureBounds(ScalarField& candidate)
  */
 template<typename Scalar, typename ScalarField>
 VectorX<size_t> DiffEvolution<Scalar, ScalarField>::generateSamples(
-    const Index n,
-    const size_t candidate_index)
-{
-    VectorX<size_t> indexes(n);
+	const Index n,
+	const size_t candidate_index) {
+  VectorX<size_t> indexes(n);
 
-    bool success;
+  bool success;
 
-    for (Index i = 0; i < n; i++)
-    {
-        do
-        {
-            // Use min(m_popsize - 1, rand) to fix C++ random where it may
-            // occasionally return b
-            indexes[i] = min(m_popsize - 1, m_rand_popsize(m_gen));
+  for (Index i = 0; i < n; i++) {
+	do {
+	  // Use min(m_popsize - 1, rand) to fix C++ random where it may
+	  // occasionally return b
+	  indexes[i] = min(m_popsize - 1, m_rand_popsize(m_gen));
 
-            success = (indexes[i] != candidate_index);
-            for (Index j = 0; j < i; j++)
-            {
-                success &= (indexes[i] != indexes[j]);
-            }
-        }
-        while (!success);
-    }
+	  success = (indexes[i] != candidate_index);
+	  for (Index j = 0; j < i; j++) {
+		success &= (indexes[i] != indexes[j]);
+	  }
+	} while (!success);
+  }
 
-    return indexes;
+  return indexes;
 }
 
 /**
@@ -246,27 +233,23 @@ VectorX<size_t> DiffEvolution<Scalar, ScalarField>::generateSamples(
  * constraints) when computing fitness values.
  */
 template<typename Scalar, typename ScalarField>
-void DiffEvolution<Scalar, ScalarField>::generate()
-{
-    // TODO: Change generation method to Halton
-    // TODO: Parallelize
-    for (size_t i = 0; i < m_popsize; i++)
-    {
-        for (size_t j = 0; j < m_dim; j++)
-        {
-            m_population[i][j] = m_rand_bounds[j](m_gen);
-        }
+void DiffEvolution<Scalar, ScalarField>::generate() {
+  // TODO: Change generation method to Halton
+  // TODO: Parallelize
+  for (size_t i = 0; i < m_popsize; i++) {
+	for (size_t j = 0; j < m_dim; j++) {
+	  m_population[i][j] = m_rand_bounds[j](m_gen);
+	}
 
-        m_population[i].constraint = m_constraints(m_population[i].value);
+	m_population[i].constraint = m_constraints(m_population[i].value);
 
-        // Only need to work out population energies for those that are feasible
-        if (m_population[i].constraint <= 0.0)
-        {
-            m_population[i].fitness = m_fitness(m_population[i].value);
-        }
-    }
+	// Only need to work out population energies for those that are feasible
+	if (m_population[i].constraint <= 0.0) {
+	  m_population[i].fitness = m_fitness(m_population[i].value);
+	}
+  }
 
-    m_population.best();
+  m_population.best();
 }
 
 /**
@@ -283,11 +266,10 @@ void DiffEvolution<Scalar, ScalarField>::generate()
  */
 template<typename Scalar, typename ScalarField>
 void DiffEvolution<Scalar, ScalarField>::mutateRand1(ScalarField& candidate,
-    const VectorX<size_t>& samples)
-{
-    candidate = m_population[samples[2]].value
-                + m_mutation * (m_population[samples[0]].value
-                                - m_population[samples[1]].value);
+													 const VectorX<size_t>& samples) {
+  candidate = m_population[samples[2]].value
+	  + m_mutation * (m_population[samples[0]].value
+		  - m_population[samples[1]].value);
 }
 
 /**
@@ -304,11 +286,10 @@ void DiffEvolution<Scalar, ScalarField>::mutateRand1(ScalarField& candidate,
  */
 template<typename Scalar, typename ScalarField>
 void DiffEvolution<Scalar, ScalarField>::mutateBest1(ScalarField& candidate,
-    const VectorX<size_t>& samples)
-{
-    candidate = m_population.best_individual.value
-                + m_mutation * (m_population[samples[0]].value
-                                - m_population[samples[1]].value);
+													 const VectorX<size_t>& samples) {
+  candidate = m_population.best_individual.value
+	  + m_mutation * (m_population[samples[0]].value
+		  - m_population[samples[1]].value);
 }
 
 /**
@@ -327,33 +308,27 @@ void DiffEvolution<Scalar, ScalarField>::mutateBest1(ScalarField& candidate,
  * @return Trial candidate solution generated through crossover and mutation.
  */
 template<typename Scalar, typename ScalarField>
-ScalarField DiffEvolution<Scalar, ScalarField>::crossover(size_t pos)
-{
-    ScalarField trial = m_population[pos].value;
+ScalarField DiffEvolution<Scalar, ScalarField>::crossover(size_t pos) {
+  ScalarField trial = m_population[pos].value;
 
-    if (m_population[pos].constraint <= 0.0)
-    {
-        const VectorX_s<size_t, 2> samples = generateSamples(2, pos);
-        mutateBest1(trial, samples);
-    }
-    else
-    {
-        const VectorX_s<size_t, 3> samples = generateSamples(3, pos);
-        mutateRand1(trial, samples);
-    }
+  if (m_population[pos].constraint <= 0.0) {
+	const VectorX_s<size_t, 2> samples = generateSamples(2, pos);
+	mutateBest1(trial, samples);
+  } else {
+	const VectorX_s<size_t, 3> samples = generateSamples(3, pos);
+	mutateRand1(trial, samples);
+  }
 
-    // TODO: Optimize - dont calculate the mutation if its not gonna be replaced
-    for (size_t j = 0; j < m_dim; j++)
-    {
-        if (!(m_rand_recomb(m_gen) < m_recombination || j == m_rand_dim(m_gen)))
-        {
-            trial[j] = m_population[pos][j];
-        }
-    }
+  // TODO: Optimize - dont calculate the mutation if its not gonna be replaced
+  for (size_t j = 0; j < m_dim; j++) {
+	if (!(m_rand_recomb(m_gen) < m_recombination || j == m_rand_dim(m_gen))) {
+	  trial[j] = m_population[pos][j];
+	}
+  }
 
-    ensureBounds(trial);
+  ensureBounds(trial);
 
-    return trial;
+  return trial;
 }
 
 /**
@@ -369,36 +344,32 @@ ScalarField DiffEvolution<Scalar, ScalarField>::crossover(size_t pos)
  *  false otherwise.
  */
 template<typename Scalar, typename ScalarField>
-bool DiffEvolution<Scalar, ScalarField>::iterate()
-{
-    bool found_better = false;
+bool DiffEvolution<Scalar, ScalarField>::iterate() {
+  bool found_better = false;
 
-    m_mutation = m_rand_mutation(m_gen);
+  m_mutation = m_rand_mutation(m_gen);
 
-    Individual<Scalar, ScalarField> trial;
+  Individual<Scalar, ScalarField> trial;
 
-    // TODO: Parallelize
-    for (size_t i = 0; i < m_popsize; i++)
-    {
-        trial.value = crossover(i);
-        trial.constraint = m_constraints(trial.value);
+  // TODO: Parallelize
+  for (size_t i = 0; i < m_popsize; i++) {
+	trial.value = crossover(i);
+	trial.constraint = m_constraints(trial.value);
 
-        // Only need to work out population energies for those that are feasible
-        if (trial.constraint <= 0.0)
-        {
-            trial.fitness = m_fitness(trial.value);
-        }
+	// Only need to work out population energies for those that are feasible
+	if (trial.constraint <= 0.0) {
+	  trial.fitness = m_fitness(trial.value);
+	}
 
-        if (trial.isBetter(m_population[i]))
-        {
-            m_population[i] = trial;
-            found_better = true;
-        }
-    }
+	if (trial.isBetter(m_population[i])) {
+	  m_population[i] = trial;
+	  found_better = true;
+	}
+  }
 
-    m_population.best();
+  m_population.best();
 
-    return found_better;
+  return found_better;
 }
 
 }

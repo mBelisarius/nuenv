@@ -15,7 +15,7 @@ project(${ProjectName})
 # Guard against bad build-type strings
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
-endif()
+endif ()
 
 add_compile_options(
         -Wall -Werror -Wno-error=uninitialized
@@ -95,6 +95,7 @@ add_executable(${ProjectName}-test
         test/integrate/rk4.cpp
         test/interpolate/interp1d.cpp
         test/optimize/diff_evolution.cpp
+        test/test.cpp
 )
 
 target_link_libraries(${ProjectName}-test gtest_main ${ProjectName})

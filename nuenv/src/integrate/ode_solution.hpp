@@ -1,5 +1,5 @@
-#ifndef NUENV_INTEGRATE_SOLUTION_H
-#define NUENV_INTEGRATE_SOLUTION_H
+#ifndef NUENV_INTEGRATE_SOLUTION_H_
+#define NUENV_INTEGRATE_SOLUTION_H_
 
 #include "nuenv/src/core/container.hpp"
 
@@ -16,16 +16,15 @@ namespace nuenv {
  * @tparam ScalarField Scalar field type.
  */
 template<typename Scalar, typename ScalarField>
-struct OdeSolution
-{
-    OdeSolution(const VectorX<Scalar>& t_,
-                const VectorX<ScalarField>& x_,
-                const size_t size_)
-        : t(t_), x(x_), size(size_) {}
+struct OdeSolution {
+  OdeSolution(const VectorX<Scalar>& _t,
+			  const VectorX<ScalarField>& _x,
+			  const size_t _size)
+	  : t(_t), x(_x), size(_size) {}
 
-    const VectorX<Scalar> t;
-    const VectorX<ScalarField> x;
-    const size_t size;
+  const VectorX<Scalar> t;
+  const VectorX<ScalarField> x;
+  const size_t size;
 };
 
 }
