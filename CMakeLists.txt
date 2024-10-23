@@ -1,12 +1,12 @@
 # =========================================================
 # Numerical Environment Basics
 
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.21)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "cmake")
 
-set(ProjectName nuenv)
+set(ProjectName Nuenv)
 set(ProjectNamespace nuenv)
 set(CMAKE_CXX_STANDARD 20)
 
@@ -30,10 +30,11 @@ add_compile_options(
         $<$<CONFIG:DEBUG>:-g>
 )
 
+include(FetchContent)
+
 # =========================================================
 # gtest
 
-include(FetchContent)
 FetchContent_Declare(
         googletest
         URL
@@ -51,7 +52,6 @@ set_property(TARGET gtest_main PROPERTY FOLDER "gtest")
 # =========================================================
 # Eigen
 
-include(FetchContent)
 FetchContent_Declare(
         Eigen
         URL
@@ -86,21 +86,27 @@ export(PACKAGE ${ProjectName})
 
 # --- gtest
 
-enable_testing()
+# Determine if we should build tests.
+include(CMakeDependentOption)
+cmake_dependent_option(BUILD_TESTING "Enable creation of tests." ON "PROJECT_IS_TOP_LEVEL" OFF)
+option(NUENV_BUILD_TESTING "Enable creation of Nuenv tests." ${BUILD_TESTING})
 
-add_executable(${ProjectName}-test
-        test/algorithm/search.cpp
-        test/algorithm/space.cpp
-        test/integrate/quadrature.cpp
-        test/integrate/rk4.cpp
-        test/interpolate/interp1d.cpp
-        test/optimize/diff_evolution.cpp
-        test/test.cpp
-)
+if (NUENV_BUILD_TESTING)
+    enable_testing()
 
-target_link_libraries(${ProjectName}-test gtest_main ${ProjectName})
+    add_executable(${ProjectName}-test
+            test/algorithm/search.cpp
+            test/algorithm/space.cpp
+            test/integrate/quadrature.cpp
+            test/integrate/rk4.cpp
+            test/interpolate/interp1d.cpp
+            test/optimize/diff_evolution.cpp
+    )
 
-include(GoogleTest)
-gtest_discover_tests(${ProjectName}-test)
+    target_link_libraries(${ProjectName}-test gtest_main ${ProjectName})
+
+    include(GoogleTest)
+    gtest_discover_tests(${ProjectName}-test)
+endif ()
 
 # =========================================================
